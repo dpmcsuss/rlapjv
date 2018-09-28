@@ -1,0 +1,12 @@
+Package: rlapjv
+Type: Package
+Title: Linear Assignment using Junker-Volgenant algorithms
+Version: 0.1
+Date: 2018-09-25
+Author: Daniel Sussman
+Maintainer: Daniel Sussman <sussman@bu.edu>
+Description: Faster algorithms that produce output similar to the clue package.
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.12.17)
+LinkingTo: Rcpp
+RoxygenNote: 6.0.1

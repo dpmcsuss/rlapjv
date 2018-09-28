@@ -1,0 +1,7 @@
+useDynLib(rlapjv)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
+
+export(lapjv)
+export(lapmod)
+export(lapmod_index)
