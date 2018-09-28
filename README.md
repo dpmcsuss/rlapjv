@@ -21,7 +21,7 @@ lapjv(x)
 clue::solve_LSAP(x)
 # Optimal assignment:
 # 1 => 8, 2 => 3, 3 => 9, 4 => 1, 5 => 2, 6 => 4, 7 => 6, 8 => 7,
-# 9 => 10, 10 => 
+# 9 => 10, 10 => 5
 
 lapjv(x, maximize = TRUE)
 # [1]  6  9  4  3  7  5  2  1  8 10
