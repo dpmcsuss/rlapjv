@@ -59,6 +59,7 @@ int_t _ccrrt_dense(const uint_t n, cost_t *cost[],
                 if (c < min) {
                     min = c;
                 }
+                PRINTF("j2 = %i, i = %i, cc[i,j2] = %f, c = %f, v[j2] = %f, min = %f\n", j2, i, cost[i][j2], c, v[j2], min);
             }
             PRINTF("v[%d] = %f - %f\n", j, v[j], min);
             v[j] -= min;
@@ -94,6 +95,7 @@ int_t _carr_dense(
         v1 = cost[free_i][0] - v[0];
         j2 = -1;
         v2 = LARGE;
+        PRINTF("free_i = %d\n", free_i);
         for (uint_t j = 1; j < n; j++) {
             PRINTF("%d = %f %d = %f\n", j1, v1, j2, v2);
             const cost_t c = cost[free_i][j] - v[j];

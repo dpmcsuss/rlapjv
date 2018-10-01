@@ -33,7 +33,7 @@ lapjv <- function(cost, maximize = FALSE) {
 #'
 #' @export
 lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
-    warning("Currently does not produce expected answers for all matrices.")
+    # warning("Currently does not produce expected answers for all matrices.")
     cpp_lapmod(n, cc, ii, kk, maximize)
 }
 
@@ -50,7 +50,7 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 #'
 #' @export
 lapmod <- function(sparse_matrix, maximize = FALSE){
-    warning("Currently does not produce expected answers for all matrices.")
+    # warning("Currently does not produce expected answers for all matrices.")
     n <- nrow(sparse_matrix)
     cpp_lapmod(n, sparse_matrix@x,
         sparse_matrix@p, sparse_matrix@i, maximize)

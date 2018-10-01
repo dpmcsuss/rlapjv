@@ -50,18 +50,27 @@ int_t _ccrrt_sparse(const uint_t n, cost_t *cc, uint_t *ii, uint_t *kk,
     for (uint_t i = 0; i < n; i++) {
         if (x[i] < 0) {
             free_rows[n_free_rows++] = i;
-        } else if (unique[i] && (ii[i+1] - ii[i] > 1)) {
+        } else if (unique[i]) {
             const int_t j = x[i];
-            cost_t min = large;
-            for (uint_t k = ii[i]; k < ii[i+1]; k++) {
-                const int_t j2 = kk[k];
-                if (j2 == j) {
+            cost_t min = LARGE;
+            uint_t k = ii[i];
+            cost_t cj2 = 0;
+            for (uint_t j2 = 0; j2 < n; j2++) {
+                if(k < ii[i + 1] && kk[k] == j2) {
+                    cj2 = cc[k];
+                    k++;
+                } else {
+                    cj2 = large;
+                }
+                // const int_t j2 = kk[k];
+                if (j2 == (uint_t)j) {
                     continue;
                 }
-                const cost_t c = cc[k] - v[j2];
+                const cost_t c = cj2 - v[j2];
                 if (c < min) {
                     min = c;
                 }
+                PRINTF("j2 = %i, i = %i, cc[i,j2] = %f, c = %f, v[j2] = %f, min = %f\n", j2, i, cc[k], c, v[j2], min);
             }
             PRINTF("v[%d] = %f - %f\n", j, v[j], min);
             v[j] -= min;
@@ -94,20 +103,47 @@ int_t _carr_sparse(
 
         PRINTF("current = %d\n", current);
         const int_t free_i = free_rows[current++];
-        if (ii[free_i+1] - ii[free_i] > 0) {
+        PRINTF("free_i = %d\n", free_i);
+        // if (ii[free_i+1] - ii[free_i] > 0) {
+        //     const uint_t k = ii[free_i];
+        //     j1 = kk[k];
+        //     v1 = cc[k] - v[j1];
+        // } else {
+        //     // This means the next row is empty
+        //     j1 = 0;
+        //     v1 = large;
+        // }
+        j1 = 0;
+        if (ii[free_i+1] - ii[free_i] > 0 && kk[ii[free_i]] == 0) {
             const uint_t k = ii[free_i];
-            j1 = kk[k];
             v1 = cc[k] - v[j1];
         } else {
-            j1 = 0;
-            v1 = large;
+            v1 = large - v[0];
         }
         j2 = -1;
-        v2 = large;
-        for (uint_t k = ii[free_i]+1; k < ii[free_i+1]; k++) {
+        v2 = LARGE;
+        // meaning this loop doesn't run
+        // for (uint_t k = ii[free_i]+1; k < ii[free_i+1]; k++) {
+        //     PRINTF("%d = %f %d = %f\n", j1, v1, j2, v2);
+        //     const int_t j = kk[k];
+        //     const cost_t c = cc[k] - v[j];
+
+        uint_t k = ii[free_i];
+        if( kk[k] == 0 ){
+            k++;
+        }
+        cost_t cj = 0;
+        for (uint_t j = 1; j < n; j++) {
+            if(k < ii[free_i+1] && kk[k] == j) {
+                PRINTF("GOOD ONE %d ", j);
+                cj = cc[k];
+                k++;
+            } else {
+                PRINTF("NOT GOOD   ");
+                cj = large;
+            }
+            const cost_t c = cj - v[j];
             PRINTF("%d = %f %d = %f\n", j1, v1, j2, v2);
-            const int_t j = kk[k];
-            const cost_t c = cc[k] - v[j];
             if (c < v2) {
                 if (c >= v1) {
                     v2 = c;
@@ -196,7 +232,7 @@ int_t _scan_sparse_1(
     const uint_t n, cost_t *cc, uint_t *ii, uint_t *kk,
     uint_t *plo, uint_t *phi,
     cost_t *d, int_t *cols, int_t *pred,
-    int_t *y, cost_t *v)
+    int_t *y, cost_t *v, cost_t large)
 {
     uint_t lo = *plo;
     uint_t hi = *phi;
@@ -221,10 +257,11 @@ int_t _scan_sparse_1(
         PRINT_INDEX_ARRAY(kk + ii[i], ii[i+1] - ii[i]);
         kj = rev_kk[j];
         if (kj == -1) {
-            continue;
+            h = large - v[j] - mind;
+        } else {
+            // ASSERT(kk[kj] == j);
+            h = cc[kj] - v[j] - mind;
         }
-        ASSERT(kk[kj] == j);
-        h = cc[kj] - v[j] - mind;
         PRINTF("i=%d j=%d kj=%d h=%f\n", i, j, kj, h);
         // For all columns in TODO
         for (uint_t k = hi; k < n; k++) {
@@ -232,10 +269,11 @@ int_t _scan_sparse_1(
             PRINTF("?%d kk[%d:%d]=", j, ii[i], ii[i+1]);
             PRINT_INDEX_ARRAY(kk + ii[i], ii[i+1] - ii[i]);
             if ((kj = rev_kk[j]) == -1) {
-                continue;
+                cred_ij = large - v[j] - h;
+            } else {
+                ASSERT(kk[kj] == j);
+                cred_ij = cc[kj] - v[j] - h;
             }
-            ASSERT(kk[kj] == j);
-            cred_ij = cc[kj] - v[j] - h;
             if (cred_ij < d[j]) {
                 d[j] = cred_ij;
                 pred[j] = i;
@@ -363,9 +401,21 @@ int_t find_path_sparse_1(
         d[i] = large;
         pred[i] = start_i;
     }
-    for (uint_t i = ii[start_i]; i < ii[start_i + 1]; i++) {
-        const int_t j = kk[i];
-        d[j] = cc[i] - v[j];
+
+    // for (uint_t i = ii[start_i]; i < ii[start_i + 1]; i++) {
+    //     const int_t j = kk[i];
+    //     d[j] = cc[i] - v[j];
+    // }
+    cost_t cci = 0;
+    uint_t k = ii[start_i];
+    for(uint_t j = 0; j < n; j++) {
+        if(k < ii[start_i+1] && j == kk[k] ) {
+            cci = cc[k];
+            k++;
+        } else {
+            cci = large;
+        }
+        d[j] = cci - v[j];
     }
     PRINT_COST_ARRAY(d, n);
     while (final_j == -1) {
@@ -386,7 +436,7 @@ int_t find_path_sparse_1(
         if (final_j == -1) {
             PRINTF("%d..%d -> scan\n", lo, hi);
             final_j = _scan_sparse_1(
-                    n, cc, ii, kk, &lo, &hi, d, cols, pred, y, v);
+                    n, cc, ii, kk, &lo, &hi, d, cols, pred, y, v, large);
             PRINT_COST_ARRAY(d, n);
             PRINT_INDEX_ARRAY(cols, n);
             PRINT_INDEX_ARRAY(pred, n);

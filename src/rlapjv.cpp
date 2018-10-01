@@ -47,7 +47,7 @@ IntegerVector cpp_lapmod(int n, NumericVector cc, IntegerVector ii, IntegerVecto
   // assert(max(kk) < n)
   IntegerVector x(nr);
   IntegerVector y(nr);
-  fp_t fp_version = FP_DYNAMIC;
+  fp_t fp_version = FP_1;
 
   double max_cost = max(cc);
   if( maximize )
