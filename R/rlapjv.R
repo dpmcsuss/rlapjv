@@ -11,7 +11,14 @@
 #'
 #' @export
 lapjv <- function(cost, maximize = FALSE) {
-    cpp_lapjv(as.matrix(cost), maximize)
+    m <- max(cost)
+    n <- nrow(cost)
+
+    ind <- cpp_lapjv(
+        rbind(cbind(as.matrix(cost), m + m * runif(n)),
+            m + m * runif(n +1)),
+        maximize)
+    ind[1:n]
 }
 
 
@@ -49,10 +56,15 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 #' @return The assignment of rows to columns as an integer vector
 #'
 #' @export
-lapmod <- function(sparse_matrix, maximize = FALSE){
+lapmod <- function(spmat, maximize = FALSE){
     # warning("Currently does not produce expected answers for all matrices.")
-    n <- nrow(sparse_matrix)
-    cpp_lapmod(n, sparse_matrix@x,
-        sparse_matrix@p, sparse_matrix@i, maximize)
+    n <- nrow(spmat)
+    m <- max(spmat@x)
+    spmat <- rbind2(cbind2(spmat, m + m * runif(n)),
+        m + m * runif(n+1))
+
+    ind <- cpp_lapmod(n, spmat@x,
+        spmat@p, spmat@i, maximize)
+    ind[1:n]
 }
 
