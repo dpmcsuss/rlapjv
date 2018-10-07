@@ -58,10 +58,11 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 #' @export
 lapmod <- function(spmat, maximize = FALSE){
     n <- nrow(spmat)
-    m <- max(spmat@x)
+    m <- max(abs(spmat@x))
     pos <- ifelse(maximize, -1, 1)
     spmat <- rbind2(cbind2(spmat, pos * (m + m * runif(n))),
         pos * (m + m * runif(n + 1)))
+    spmat[n + 1, n + 1] <- m ^ 3 * pos
     ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
     ind[1:n]
