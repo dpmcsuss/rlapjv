@@ -18,9 +18,7 @@ lapjv <- function(cost, maximize = FALSE) {
             m + m * runif(n +1))
     cost[n + 1, n + 1] <- m ^ 3
 
-    ind <- cpp_lapjv(
-        ,
-        maximize)
+    ind <- cpp_lapjv(cost, maximize)
     ind[1:n]
 }
 
@@ -66,7 +64,7 @@ lapmod <- function(spmat, maximize = FALSE){
     browser()
     spmat <- rbind2(cbind2(spmat, m + m * runif(n)),
         m + m * runif(n+1))
-    ind <- cpp_lapmod(n, spmat@x,
+    ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
     ind[1:n]
 }
