@@ -41,7 +41,6 @@ lapjv <- function(cost, maximize = FALSE) {
 #'
 #' @export
 lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
-    # warning("Currently does not produce expected answers for all matrices.")
     cpp_lapmod(n, cc, ii, kk, maximize)
 }
 
@@ -58,12 +57,11 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 #'
 #' @export
 lapmod <- function(spmat, maximize = FALSE){
-    # warning("Currently does not produce expected answers for all matrices.")
     n <- nrow(spmat)
     m <- max(spmat@x)
 
     spmat <- rbind2(cbind2(spmat, m + m * runif(n)),
-        m + m * runif(n+1))
+        m + m * runif(n + 1))
     ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
     ind[1:n]
