@@ -14,9 +14,12 @@ lapjv <- function(cost, maximize = FALSE) {
     m <- max(cost)
     n <- nrow(cost)
 
+    cost <- rbind(cbind(as.matrix(cost), m + m * runif(n)),
+            m + m * runif(n +1))
+    cost[n + 1, n + 1] <- m ^ 3
+
     ind <- cpp_lapjv(
-        rbind(cbind(as.matrix(cost), m + m * runif(n)),
-            m + m * runif(n +1)),
+        ,
         maximize)
     ind[1:n]
 }
@@ -60,9 +63,9 @@ lapmod <- function(spmat, maximize = FALSE){
     # warning("Currently does not produce expected answers for all matrices.")
     n <- nrow(spmat)
     m <- max(spmat@x)
+    browser()
     spmat <- rbind2(cbind2(spmat, m + m * runif(n)),
         m + m * runif(n+1))
-
     ind <- cpp_lapmod(n, spmat@x,
         spmat@p, spmat@i, maximize)
     ind[1:n]
