@@ -60,7 +60,7 @@ IntegerVector cpp_lapmod(int n, NumericVector cc, IntegerVector ii, IntegerVecto
   // std::cout << kk << "\n";
 
   int c = lapmod_internal(nr, cc.begin(), ii.begin(), kk.begin(),
-    x.begin(), y.begin(), fp_version, max_cost);
+    x.begin(), y.begin(), fp_version, 2 * max_cost);
   // std::cout << "Done\n";
   // std::cout << c << "\n";
   // std::cout << x << "\n";

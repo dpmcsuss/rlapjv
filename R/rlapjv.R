@@ -59,12 +59,17 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 lapmod <- function(spmat, maximize = FALSE){
     n <- nrow(spmat)
     m <- max(abs(spmat@x))
-    pos <- ifelse(maximize, -1, 1)
-    spmat <- rbind2(cbind2(spmat, pos * (m + m * runif(n))),
-        pos * (m + m * runif(n + 1)))
-    spmat[n + 1, n + 1] <- m ^ 3 * pos
+    sign <- ifelse(maximize, -1, 1)
+    spmat <- rbind2(cbind2(spmat, sign * (m + m * runif(n))),
+        sign * (m + m * runif(n + 1)))
+    spmat[n + 1, n + 1] <- m ^ 3 * sign
     ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
+    if(ind[n + 1] <= n){
+        if (sum(spmat[which(ind == n + 1), 1:n]) > 1e-10){
+            warning("Some weird stuff happened")
+        }
+        ind[which(ind == n + 1)] <- ind[n + 1]
+    }
     ind[1:n]
 }
-
