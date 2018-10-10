@@ -60,13 +60,13 @@ lapmod <- function(spmat, maximize = FALSE){
     n <- nrow(spmat)
     m <- max(abs(spmat@x))
     sign <- ifelse(maximize, -1, 1)
-    spmat <- rbind2(cbind2(spmat, sign * 1e5 * (m * runif(n))),
-        sign * 1e5 * (m * runif(n + 1)))
-    spmat[n + 1, n + 1] <- m ^ 3 * sign * 1e5
+    pad_vec <- sign * 1e5 * m * rep(1, n)
+    spmat <- rbind2(cbind2(spmat, sign * 1e5 * (m * ceiling(runif(n))),
+        c(pad_vec, - sign * 1e5 * m)))
     ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
-    if(ind[n + 1] <= n){
-        if (sum(spmat[1:n, which(ind == n + 1)]) > 1e-10){
+    if (ind[n + 1] <= n){
+        if (sum(spmat[which(ind == n + 1), 1:n]) > 1e-10){
             warning(paste("Bad padding happened. Assigned",
                 which(ind == n + 1), "to", ind[n + 1]))
         }
