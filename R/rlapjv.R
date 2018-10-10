@@ -66,8 +66,9 @@ lapmod <- function(spmat, maximize = FALSE){
     ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
     if(ind[n + 1] <= n){
-        if (sum(spmat[which(ind == n + 1), 1:n]) > 1e-10){
-            warning("Some weird stuff happened")
+        if (sum(spmat[1:n, which(ind == n + 1)]) > 1e-10){
+            warning(paste("Bad padding happened. Assigned",
+                which(ind == n + 1), "to", ind[n + 1]))
         }
         ind[which(ind == n + 1)] <- ind[n + 1]
     }
