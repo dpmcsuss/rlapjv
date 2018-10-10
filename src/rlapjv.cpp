@@ -49,7 +49,7 @@ IntegerVector cpp_lapmod(int n, NumericVector cc, IntegerVector ii, IntegerVecto
   IntegerVector y(nr);
   fp_t fp_version = FP_1;
 
-  double max_cost = max(cc);
+  double max_cost = max(abs(cc));
   if( maximize )
   {
     cc = max_cost - cc;
@@ -60,7 +60,7 @@ IntegerVector cpp_lapmod(int n, NumericVector cc, IntegerVector ii, IntegerVecto
   // std::cout << kk << "\n";
 
   int c = lapmod_internal(nr, cc.begin(), ii.begin(), kk.begin(),
-    x.begin(), y.begin(), fp_version, 2 * max_cost);
+    x.begin(), y.begin(), fp_version, 4 * max_cost);
   // std::cout << "Done\n";
   // std::cout << c << "\n";
   // std::cout << x << "\n";
