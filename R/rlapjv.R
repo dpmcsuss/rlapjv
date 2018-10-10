@@ -60,9 +60,9 @@ lapmod <- function(spmat, maximize = FALSE){
     n <- nrow(spmat)
     m <- max(abs(spmat@x))
     sign <- ifelse(maximize, -1, 1)
-    spmat <- rbind2(cbind2(spmat, sign * 1e3 * (m + m * runif(n))),
-        sign * 1e3 * (m + m * runif(n + 1)))
-    spmat[n + 1, n + 1] <- m ^ 3 * sign * 1e3
+    spmat <- rbind2(cbind2(spmat, sign * 1e5 * (m * runif(n))),
+        sign * 1e5 * (m * runif(n + 1)))
+    spmat[n + 1, n + 1] <- m ^ 3 * sign * 1e5
     ind <- cpp_lapmod(n + 1, spmat@x,
         spmat@p, spmat@i, maximize)
     if(ind[n + 1] <= n){
