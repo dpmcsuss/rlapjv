@@ -11,12 +11,12 @@
 #'
 #' @export
 lapjv <- function(cost, maximize = FALSE) {
-    m <- max(cost)
+    m <- max(cost, 2)
     n <- nrow(cost)
 
     cost <- rbind(cbind(as.matrix(cost), m + m * runif(n)),
             m + m * runif(n +1))
-    cost[n + 1, n + 1] <- m ^ 3
+    cost[n + 1, n + 1] <- 10 * m ^ 3
 
     ind <- cpp_lapjv(cost, maximize)
     ind[1:n]
@@ -58,7 +58,7 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 #' @export
 lapmod <- function(spmat, maximize = FALSE){
     n <- nrow(spmat)
-    m <- max(abs(spmat@x))
+    m <- max(abs(spmat@x), 2)
     sign <- ifelse(maximize, -1, 1)
     pad_vec <- sign * 1e5 * m * rep(1, n)
     spmat <- rbind2(cbind2(spmat, sign * 1e5 * (m * ceiling(runif(n))),

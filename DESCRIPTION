@@ -9,4 +9,4 @@ Description: Faster algorithms that produce output similar to the clue package.
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.12.17)
 LinkingTo: Rcpp
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

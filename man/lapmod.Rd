@@ -4,7 +4,7 @@
 \alias{lapmod}
 \title{Solves the linear assignment problem using the LAPMOD algorithm}
 \usage{
-lapmod(sparse_matrix, maximize = FALSE)
+lapmod(spmat, maximize = FALSE)
 }
 \arguments{
 \item{maximize}{If FALSE (default) then costs are minimized and if TRUE the 
