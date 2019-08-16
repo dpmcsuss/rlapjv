@@ -11,14 +11,21 @@
 #'
 #' @export
 lapjv <- function(cost, maximize = FALSE) {
-    m <- max(cost, 2)
+    m <- max(cost, 10)
     n <- nrow(cost)
 
     cost <- rbind(cbind(as.matrix(cost), m + m * runif(n)),
-            m + m * runif(n +1))
+            m + m * runif(n + 1))
     cost[n + 1, n + 1] <- 10 * m ^ 3
 
     ind <- cpp_lapjv(cost, maximize)
+    if (ind[n + 1] <= n){
+        if (sum(spmat[which(ind == n + 1), 1:n]) > 1e-10){
+            warning(paste("Bad padding happened. Assigned",
+                which(ind == n + 1), "to", ind[n + 1]))
+        }
+        ind[which(ind == n + 1)] <- ind[n + 1]
+    }
     ind[1:n]
 }
 
