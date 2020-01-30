@@ -5,7 +5,7 @@ The package uses the C++ code from the [Python LAPJV package](https://github.com
 ## Installation
 
 ```
-devtools::install_github("dpmcsuss/lapjv")
+devtools::install_github("dpmcsuss/rlapjv")
 ```
 
 ## Use
