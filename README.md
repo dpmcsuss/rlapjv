@@ -5,7 +5,7 @@ The package uses the C++ code from the [Python LAPJV package](https://github.com
 ## Installation
 
 ```
-devtools::install_github("dpmcsuss/lapjv")
+devtools::install_github("dpmcsuss/rlapjv")
 ```
 
 ## Use
@@ -14,7 +14,7 @@ Currently the `lapjv` function has been tested and compared to the output of the
 
 ```
 set.seed(12345)
-library(lapjv)
+library(rlapjv)
 x <- matrix(runif(100), 10)
 lapjv(x)
 #  [1]  8  3  9  1  2  4  6  7 10  5
