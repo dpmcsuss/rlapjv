@@ -64,6 +64,7 @@ lapmod_index <- function(n, cc, ii, kk, maximize = FALSE) {
 #'
 #' @export
 lapmod <- function(spmat, maximize = FALSE){
+    spmat <- Matrix::Matrix(spmat, sparse = TRUE)
     n <- nrow(spmat)
     m <- max(abs(spmat@x), 2)
     sign <- ifelse(maximize, -1, 1)
