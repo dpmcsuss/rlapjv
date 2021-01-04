@@ -1,3 +1,5 @@
+# #' @rawNamespace useDynLib(rlapjv); importFrom(Rcpp, evalCpp)
+
 #' @title Solves the linear assignment problem using the Jonker-Vogenant algorithm
 #'
 #' @description Find a set of vertices pairs in the order of goodness of matching according to a
@@ -20,7 +22,7 @@ lapjv <- function(cost, maximize = FALSE) {
 
     ind <- cpp_lapjv(cost, maximize)
     if (ind[n + 1] <= n){
-        if (sum(spmat[which(ind == n + 1), 1:n]) > 1e-10){
+        if (sum(cost[which(ind == n + 1), 1:n]) > 1e-10){
             warning(paste("Bad padding happened. Assigned",
                 which(ind == n + 1), "to", ind[n + 1]))
         }
